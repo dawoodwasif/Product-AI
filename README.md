@@ -1,7 +1,7 @@
 # Product-AI
 LLM-based AI Features for Product Inventory Management
 
-## Product Ivnetory Management Fabric AI Features
+## Product Inventory Management Fabric AI Features
 
 This app shows PIM platform's AI features, including a Product Description Generator, intuitive creation of collections through natural language, and automated Category Generation with smart product placement.
 
@@ -11,7 +11,7 @@ This app shows PIM platform's AI features, including a Product Description Gener
 
 **Set up Environment File**
 
-Create .env file with contents:
+Create .env file with the contents:
 
 ```OPEN_AI_KEY = <........>```
 
