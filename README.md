@@ -10,7 +10,9 @@ This app shows PIM platform's AI features, including a Product Description Gener
 ## Setup Instructions
 
 **Set up Environment File**
+
 Create .env file with contents:
+
 ```OPEN_AI_KEY = <........>```
 
 **Using Anaconda**
