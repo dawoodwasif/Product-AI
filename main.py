@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder
 from st_aggrid.shared import GridUpdateMode
-from features import generate_product_description, classify_product_category
+from features import generate_product_description, classify_product_category, create_collections
 from PIL import Image
 from io import BytesIO
 import base64 
@@ -150,9 +150,30 @@ def function2(selected_row):
     # Your code here
     return f"Function 2 output for row {selected_row}"
 
+
+def get_rows_by_product_ids(product_ids):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv('data.csv')
+
+    # Split the input string into a list of product IDs
+    product_ids_list = [int(pid.strip()) for pid in product_ids.split(',')]
+
+    # Filter rows based on the provided product IDs
+    selected_rows = df[df['ProductId'].isin(product_ids_list)]
+
+    # Check if there are at least 5 valid rows
+    if len(selected_rows) < 5:
+        st.error("Error: At least 5 valid rows are required.")
+        return None
+
+    # Convert selected rows to a list of dictionaries
+    rows_list = selected_rows.to_dict(orient='records')
+
+    return rows_list
+
 # Select a function to run
 st.subheader("Select Function")
-function_choice = st.selectbox("Choose a Function", ["Category Classification", "Product Description Generator"])
+function_choice = st.selectbox("Choose a Function", ["Category Classification", "Product Description Generator", "Create Collection"])
 
 if function_choice == "Category Classification":
         
@@ -170,7 +191,9 @@ elif function_choice == "Product Description Generator":
     # Ask for tone of voice
     tone_of_voice = st.text_input("Enter Tone of Voice", "Neutral")
 
-
+elif function_choice == "Create Collection":
+    
+    product_ids = st.text_input("Enter Product IDs (comma-separated)", "")
 
 if st.button("Run Function"):
 
@@ -179,8 +202,6 @@ if st.button("Run Function"):
         st.warning('Please select at least one row from the table')
     
     else:
-
-
         if function_choice == "Category Classification":
         
             for row in selected_rows:
@@ -192,6 +213,15 @@ if st.button("Run Function"):
             for row in selected_rows:
                 result = generate_product_description(row, tone_of_voice)
                 output += f"{result}\n"
+
+        elif function_choice == "Create Collection":
+
+            rows_list = get_rows_by_product_ids(product_ids)
+            print('AAAAAAAAAAAAAA')
+            print(rows_list)
+        
+            result = create_collections(rows_list)
+            output += f"{result}\n"
         
         # Display the function output
         st.subheader("Function Output:")

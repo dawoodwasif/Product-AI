@@ -111,3 +111,33 @@ def generate_product_description(product_attributes, tone_of_voice="neutral"):
     # Extract and return the generated product description
     generated_product_description = parse_generated_text(chat_response.choices[0].message.content)
     return generated_product_description
+
+
+def create_collections(attributes, collections=5):
+    # Initialize the OpenAI client
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    # Create a user prompt based on all provided attributes
+    #user_prompts = "\n".join([', '.join([f'{key}: {value}' for key, value in attr.items()]) for attr in attributes])
+    # Create a user prompt based on ProductId and ProductTitle attributes
+    user_prompts = "\n".join([f'ProductId: {attr["ProductId"]}, ProductTitle: {attr["ProductTitle"]}' for attr in attributes])
+
+
+    # System message describing the task to the model
+    sys = f"The following text gives multiple attributes of different products. Create " \
+          f"{collections} unique collections with each collection containing no more than 6 products"
+
+    # Call the chat API to generate collections based on the user prompts and system message
+    response = client.chat.completions.create(
+        model="gpt-4-1106-preview",
+        messages=[
+            {"role": "system", "content": sys},
+            {"role": "user", "content": user_prompts},
+        ]
+    )
+
+    # Extract the generated collections from the model's response
+    final = response.choices[0].message.content
+    list_of_collections = final.split("\n\n") 
+
+    return list_of_collections
